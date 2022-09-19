@@ -1,3 +1,6 @@
+from thread import *
+
+
 def merge(arr_a, arr_b):
     temp_arr = []
 
@@ -12,9 +15,9 @@ def merge(arr_a, arr_b):
     # join them and return temp_arr
     temp_arr = temp_arr + arr_a + arr_b
     return temp_arr
-        
 
-def merge_sort(arr):
+
+def merge_sort(arr, thread_manager=None):
     if len(arr) == 1:
         return arr
 
@@ -26,10 +29,28 @@ def merge_sort(arr):
     right_arr = arr[middle_index:]
 
     # Sort each half
-    left_arr = merge_sort(left_arr)
-    right_arr = merge_sort(right_arr)
+    left_arr = ThreadWithReturnValue(
+        target=merge_sort,
+        name=thread_manager.get_new_thread_name(),
+        args=(
+            left_arr,
+            thread_manager,
+        ),
+    )
+    right_arr = ThreadWithReturnValue(
+        target=merge_sort,
+        name=thread_manager.get_new_thread_name(),
+        args=(
+            right_arr,
+            thread_manager,
+        ),
+    )
+
+    left_arr.start()
+    right_arr.start()
+
+    left_arr = left_arr.join()
+    right_arr = right_arr.join()
 
     # Merge
     return merge(left_arr, right_arr)
-
-
