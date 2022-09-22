@@ -34,6 +34,3 @@ class ThreadManager:
     def get_new_thread_name(self) -> str:
         self.thread_count += 1
         return bin(int(self.thread_count)).replace("0b", "")
-
-    def get_output_filename(self) -> str:
-        return self.output_filename
